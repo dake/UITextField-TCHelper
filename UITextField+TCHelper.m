@@ -39,12 +39,33 @@
     }
     else {
     }
+    
+    id<TCTextFieldHelperDelegate> tc_delegate = textField.tc_delegate;
+    if (nil != tc_delegate && [tc_delegate respondsToSelector:@selector(tc_textFieldValueChanged:)]) {
+        [tc_delegate tc_textFieldValueChanged:textField];
+    }
 }
 
 @end
 
 
 @implementation UITextField (TCHelper)
+
+- (id<TCTextFieldHelperDelegate>)tc_delegate
+{
+    return objc_getAssociatedObject(self, _cmd);
+}
+
+- (void)setTc_delegate:(id<TCTextFieldHelperDelegate>)tc_delegate
+{
+    objc_setAssociatedObject(self, @selector(tc_delegate), tc_delegate, OBJC_ASSOCIATION_ASSIGN);
+    
+    id target = (id)TCTextFieldTarget.class;
+    if (![self.allTargets containsObject:target]) {
+        [self addTarget:target action:@selector(textFieldEditChanged:) forControlEvents:UIControlEventEditingChanged];
+    }
+}
+
 
 - (NSInteger)tc_maxTextLength
 {

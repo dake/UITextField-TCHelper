@@ -8,8 +8,20 @@
 
 #import <UIKit/UIKit.h>
 
+
+@protocol TCTextFieldHelperDelegate <NSObject>
+
+@optional
+- (void)tc_textFieldValueChanged:(UITextField *)sender;
+
+@end
+
 @interface UITextField (TCHelper)
 
 @property (nonatomic, assign) NSInteger tc_maxTextLength;
+@property (nonatomic, assign) id<TCTextFieldHelperDelegate> tc_delegate;
 
 @end
+
+
+
